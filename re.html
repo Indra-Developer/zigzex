@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZIGZEX | Multi-Vertical Enterprise</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.6);
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            overflow-x: hidden;
+        }
+
+        /* --- 1. SUPER WELCOME ANIMATION --- */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: transform 1s cubic-bezier(0.85, 0, 0.15, 1), opacity 1s ease;
+        }
+        .loader-text {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 800; letter-spacing: 5px;
+            background: linear-gradient(90deg, #333, var(--accent), #fff, var(--accent), #333);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 2s linear infinite;
+        }
+        @keyframes shine { to { background-position: 300% center; } }
+        
+        .progress-container {
+            width: 200px; height: 3px; background: rgba(255,255,255,0.1); 
+            margin-top: 30px; border-radius: 5px; overflow: hidden; position: relative;
+        }
+        #progress {
+            position: absolute; width: 0%; height: 100%; 
+            background: var(--accent); box-shadow: 0 0 15px var(--accent);
+            transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- 2. LAYOUT & NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 8%; position: fixed; width: 100%; z-index: 1000;
+            background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border); transition: all 0.3s ease;
+        }
+        .nav-links a {
+            color: white; text-decoration: none; margin-left: 2.5rem; 
+            font-size: 0.9rem; font-weight: 600; transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-btn {
+            background: var(--accent); padding: 12px 24px; border-radius: 12px; 
+            transition: all 0.3s ease; box-shadow: 0 0 15px rgba(99,102,241,0.2);
+        }
+        .nav-btn:hover { background: #4f46e5; box-shadow: 0 0 25px var(--accent-glow); transform: translateY(-2px); }
+
+        /* --- 3. HERO SECTION (PARALLAX) --- */
+        .hero {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 0 5%; position: relative;
+            background: linear-gradient(rgba(2,6,23,0.8), rgba(2,6,23,0.95)), 
+                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+        }
+        .super-text {
+            font-size: clamp(4rem, 15vw, 10rem); font-weight: 800; line-height: 0.9; letter-spacing: -5px;
+            background: linear-gradient(to bottom, #ffffff 20%, var(--accent) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 10px 40px var(--accent-glow)); margin-bottom: 20px;
+        }
+
+        /* --- 4. ADVANCED HOVER CARDS (THREE PILLARS) --- */
+        .pillar-section { padding: 120px 8%; position: relative; z-index: 2; background: var(--bg); }
+        .grid-3 {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem; margin-top: 60px;
+        }
+
+        .glass-card {
+            background: var(--card); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); border-radius: 24px;
+            padding: 35px; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; gap: 15px;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 1;
+        }
+        
+        .glass-card::before {
+            content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-25deg); transition: 0.7s; z-index: 2; pointer-events: none;
+        }
+        .glass-card:hover::before { left: 200%; }
+        
+        .glass-card:hover {
+            transform: translateY(-15px) scale(1.03);
+            border-color: var(--accent);
+            background: rgba(99, 102, 241, 0.08);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.8), 0 0 40px rgba(99,102,241,0.3);
+        }
+
+        .card-icon-box {
+            width: 65px; height: 65px; background: linear-gradient(135deg, var(--accent), #3b82f6);
+            border-radius: 18px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .img-wrap {
+            width: 100%; height: 220px; border-radius: 16px;
+            overflow: hidden; margin-top: 15px; position: relative;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .img-wrap img { 
+            width: 100%; height: 100%; object-fit: cover; 
+            transition: transform 0.8s ease, filter 0.8s ease; 
+            filter: brightness(0.7) grayscale(30%);
+        }
+        .glass-card:hover .img-wrap img { 
+            transform: scale(1.15); 
+            filter: brightness(1.1) grayscale(0%);
+        }
+
+        /* --- 5. MODERN FOOTER --- */
+        .modern-footer {
+            background: #010409;
+            border-top: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 100px 8% 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .modern-footer::before {
+            content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 70%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            box-shadow: 0 0 30px 2px var(--accent-glow);
+        }
+        .footer-top {
+            display: flex; flex-wrap: wrap; justify-content: space-between; gap: 50px; margin-bottom: 70px;
+        }
+        .footer-brand { max-width: 400px; }
+        .footer-logo { font-size: 2.2rem; font-weight: 800; color: var(--accent); margin-bottom: 20px; letter-spacing: -1px; }
+        .footer-brand p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 30px; }
+        
+        .footer-socials { display: flex; gap: 15px; }
+        .footer-socials a {
+            padding: 10px 20px; border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .footer-socials a:hover { 
+            border-color: var(--accent); color: var(--text-main); 
+            background: rgba(99, 102, 241, 0.15); transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);
+        }
+        
+        .footer-links-group { display: flex; flex-wrap: wrap; gap: 80px; }
+        .footer-col h4 { color: #fff; margin-bottom: 25px; font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
+        .footer-col a {
+            display: block; color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
+            margin-bottom: 15px; transition: all 0.3s ease;
+        }
+        .footer-col a:hover { color: var(--accent); transform: translateX(8px); }
+        
+        .footer-bottom {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+            padding-top: 30px; border-top: 1px solid var(--border);
+        }
+        .footer-bottom p { color: #666; font-size: 0.85rem; font-weight: 600; letter-spacing: 1px; }
+        .footer-legal-links { display: flex; gap: 30px; }
+        .footer-legal-links a { color: #666; text-decoration: none; font-size: 0.85rem; transition: color 0.3s; font-weight: 600;}
+        .footer-legal-links a:hover { color: var(--text-main); }
+
+        /* Utilities */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .super-text { letter-spacing: -2px; }
+            .hero { background-attachment: scroll; } 
+            .pillar-section { padding: 80px 5%; }
+            .footer-links-group { gap: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-text">ZIGZEX</div>
+        <div style="color: #666; font-size: 0.9rem; letter-spacing: 4px; margin-top: 10px; font-weight: 600;">ENTERPRISE ARCHITECTURE</div>
+        <div class="progress-container">
+            <div id="progress"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo" style="font-weight:800; color:var(--accent); font-size:1.6rem; letter-spacing: -1px;">ZIGZEX</div>
+        <div class="nav-links">
+            <a href="#centers">Core Centers</a>
+            <a href="#governance">Governance</a>
+            <a href="#roadmap">10-Year Vision</a>
+            <a href="#" class="nav-btn">Founding Partner</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1 class="super-text animate__animated animate__zoomIn">ZIGZEX</h1>
+        <p class="animate__animated animate__fadeInUp animate__delay-1s" style="font-size: clamp(1.1rem, 3vw, 1.5rem); color: var(--text-muted); max-width: 800px; line-height: 1.6;">
+            A Global Multi-Vertical SaaS Conglomerate. <br>
+            <span style="color: #fff; font-weight: 600;">Governance-First. Innovation-Driven. Future-Ready.</span>
+        </p>
+    </header>
+
+    <section class="pillar-section" id="centers">
+        <div class="reveal" style="text-align: center;">
+            <h2 style="font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 800; margin-bottom: 1rem;">Core Specialized Centers</h2>
+            <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">
+                Strategic diversification across Aerospace, Enterprise Software, and Global Commerce.
+            </p>
+        </div>
+
+        <div class="grid-3">
+            <div class="glass-card reveal">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="card-icon-box">🛸</div>
+                    <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 2px;">VERTICAL 01</span>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-top: 10px;">Aerospace Research</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Developing autonomous eVTOL systems and high-altitude research drones for modern logistics.</p>
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=800&q=80" alt="Aerospace Drone Tech">
+                </div>
+            </div>
+
+            <div class="glass-card reveal" style="transition-delay: 0.15s;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="card-icon-box">💻</div>
+                    <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 2px;">VERTICAL 02</span>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-top: 10px;">Software Development</h3>
+                [cite_start]<p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Cloud-native, multi-tenant SaaS architecture for Schools, Colleges, and Hospitals[cite: 28, 29].</p>
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Software Data Center">
+                </div>
+            </div>
+
+            <div class="glass-card reveal" style="transition-delay: 0.3s;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div class="card-icon-box">🛍️</div>
+                    <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 2px;">VERTICAL 03</span>
+                </div>
+                <h3 style="font-size: 1.5rem; margin-top: 10px;">Fashion E-Commerce</h3>
+                [cite_start]<p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">AI-powered retail infrastructure designed for national and international scalability[cite: 57].</p>
+                <div class="img-wrap">
+                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="E-commerce Retail">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="governance" class="modern-footer">
+        <div class="footer-top reveal">
+            <div class="footer-brand">
+                <h2 class="footer-logo">ZIGZEX</h2>
+                [cite_start]<p>Architecting a structured, multi-vertical SaaS enterprise[cite: 4]. [cite_start]Driven by a governance-first philosophy and a 50-year institutional continuity vision[cite: 54].</p>
+                <div class="footer-socials">
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Twitter/X</a>
+                    <a href="#">Investor Portal</a>
+                </div>
+            </div>
+            
+            <div class="footer-links-group">
+                <div class="footer-col">
+                    <h4>Core Verticals</h4>
+                    <a href="#">Aerospace Research</a>
+                    <a href="#">School & College ERP</a>
+                    <a href="#">HealthTech Architecture</a>
+                    <a href="#">Fashion E-Commerce</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Governance</h4>
+                    <a href="#">MOA & AOA Docs</a>
+                    <a href="#">Board Structure</a>
+                    <a href="#">ESOP Pool (10%)</a>
+                    <a href="#">Corporate Tax & GST</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Investment Structure</h4>
+                    <a href="#">Funding Roadmap</a>
+                    <a href="#">Valuation Simulation</a>
+                    <a href="#">Financial Analytics</a>
+                    <a href="#">Contact Partners</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom reveal" style="transition-delay: 0.2s;">
+            <p>&copy; 2026 ZIGZEX IT SERVICES PRIVATE LIMITED. ALL RIGHTS RESERVED.</p>
+            <div class="footer-legal-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Legal Disclaimer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Welcome Loader Logic
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('progress');
+            progress.style.width = '100%';
+            
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.transform = 'translateY(-100%)';
+                    loader.style.display = 'none';
+                }, 1000);
+            }, 2200);
+        });
+
+        // Scroll Reveal Logic (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
