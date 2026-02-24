@@ -24,8 +24,6 @@
             --loader-bg: #000;
             --loader-text-edges: #333;
             --footer-bg: #010409;
-            --card-shadow: rgba(0, 0, 0, 0.8);
-            --card-sweep: rgba(255, 255, 255, 0.1);
         }
 
         /* --- LIGHT THEME VARIABLES --- */
@@ -42,9 +40,10 @@
             --loader-bg: #f8fafc;
             --loader-text-edges: #cbd5e1;
             --footer-bg: #f1f5f9;
-            --card-shadow: rgba(0, 0, 0, 0.1);
-            --card-sweep: rgba(255, 255, 255, 0.8);
         }
+
+        /* Hide Source Tags Cleanly */
+        .cite-hide { display: none; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -91,8 +90,7 @@
             border-bottom: 1px solid var(--border); transition: all 0.3s ease;
         }
         .nav-links {
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center;
         }
         .nav-links a {
             color: var(--text-main); text-decoration: none; margin-left: 2.5rem; 
@@ -107,20 +105,20 @@
 
         /* THEME TOGGLE BUTTON */
         .theme-toggle {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 50%;
-            margin-left: 2.5rem;
-            transition: all 0.3s ease;
+            background: transparent; border: 1px solid var(--border); color: var(--text-main);
+            font-size: 1.2rem; cursor: pointer; padding: 8px 12px; border-radius: 50%;
+            margin-left: 2.5rem; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
         }
-        .theme-toggle:hover {
-            background: var(--accent);
-            color: #fff;
-            transform: scale(1.1);
+        .theme-toggle:hover { background: var(--accent); color: #fff; transform: scale(1.1); }
+
+        /* HAMBURGER MENU ICON */
+        .hamburger {
+            display: none; cursor: pointer; border: none; background: transparent;
+            flex-direction: column; gap: 5px; z-index: 1001;
+        }
+        .hamburger .bar {
+            width: 25px; height: 3px; background-color: var(--text-main);
+            transition: all 0.3s ease; border-radius: 2px;
         }
 
         /* --- 3. HERO SECTION (PARALLAX) --- */
@@ -156,7 +154,7 @@
         
         .glass-card::before {
             content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, var(--card-sweep), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
             transform: skewX(-25deg); transition: 0.7s; z-index: 2; pointer-events: none;
         }
         .glass-card:hover::before { left: 200%; }
@@ -165,7 +163,7 @@
             transform: translateY(-15px) scale(1.03);
             border-color: var(--accent);
             background: rgba(99, 102, 241, 0.08);
-            box-shadow: 0 30px 60px -15px var(--card-shadow), 0 0 40px rgba(99,102,241,0.3);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5), 0 0 40px rgba(99,102,241,0.3);
         }
 
         .card-icon-box {
@@ -191,12 +189,8 @@
 
         /* --- 5. MODERN FOOTER --- */
         .modern-footer {
-            background: var(--footer-bg);
-            border-top: 1px solid rgba(99, 102, 241, 0.2);
-            padding: 100px 8% 40px;
-            position: relative;
-            overflow: hidden;
-            transition: background-color 0.5s ease;
+            background: var(--footer-bg); border-top: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 100px 8% 40px; position: relative; overflow: hidden; transition: background-color 0.5s ease;
         }
         .modern-footer::before {
             content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -243,8 +237,31 @@
         .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
+        /* --- MOBILE MEDIA QUERIES --- */
+        @media (max-width: 900px) {
+            .hamburger { display: flex; }
+            .nav-links {
+                position: absolute; top: 100%; left: 0; width: 100%;
+                background: var(--nav-bg); backdrop-filter: blur(20px);
+                flex-direction: column; align-items: flex-start;
+                padding: 20px 8%; border-bottom: 1px solid var(--border);
+                transform: translateY(-150%); opacity: 0; visibility: hidden;
+                transition: all 0.4s ease;
+            }
+            .nav-links.active {
+                transform: translateY(0); opacity: 1; visibility: visible;
+            }
+            .nav-links a, .nav-btn, .theme-toggle {
+                margin: 15px 0; margin-left: 0; width: 100%; text-align: left;
+            }
+            .nav-btn { text-align: center; }
+            .theme-toggle { width: auto; align-self: flex-start; }
+            
+            /* Hamburger Animation */
+            .hamburger.toggle .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+            .hamburger.toggle .bar:nth-child(2) { opacity: 0; }
+            .hamburger.toggle .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
             .super-text { letter-spacing: -2px; }
             .hero { background-attachment: scroll; } 
             .pillar-section { padding: 80px 5%; }
@@ -264,7 +281,14 @@
 
     <nav>
         <div class="logo" style="font-weight:800; color:var(--accent); font-size:1.6rem; letter-spacing: -1px;">ZIGZEX</div>
-        <div class="nav-links">
+        
+        <button class="hamburger" id="hamburger" aria-label="Toggle Menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <div class="nav-links" id="nav-links">
             <a href="#centers">Core Centers</a>
             <a href="#governance">Governance</a>
             <a href="#roadmap">10-Year Vision</a>
@@ -278,6 +302,7 @@
         <p class="animate__animated animate__fadeInUp animate__delay-1s" style="font-size: clamp(1.1rem, 3vw, 1.5rem); color: var(--text-muted); max-width: 800px; line-height: 1.6;">
             A Global Multi-Vertical SaaS Conglomerate. <br>
             <span style="color: var(--text-main); font-weight: 600;">Governance-First. Innovation-Driven. Future-Ready.</span>
+            <span class="cite-hide"></span>
         </p>
     </header>
 
@@ -308,7 +333,7 @@
                     <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 2px;">VERTICAL 02</span>
                 </div>
                 <h3 style="font-size: 1.5rem; margin-top: 10px;">Software Development</h3>
-                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">Cloud-native, multi-tenant SaaS architecture for Schools, Colleges, and Hospitals.</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;"><span class="cite-hide">[cite_start]</span>Cloud-native, multi-tenant SaaS architecture for Schools, Colleges, and Hospitals<span class="cite-hide">[cite: 28, 29]</span>.</p>
                 <div class="img-wrap">
                     <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Software Data Center">
                 </div>
@@ -320,7 +345,7 @@
                     <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800; letter-spacing: 2px;">VERTICAL 03</span>
                 </div>
                 <h3 style="font-size: 1.5rem; margin-top: 10px;">Fashion E-Commerce</h3>
-                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">AI-powered retail infrastructure designed for national and international scalability.</p>
+                <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;"><span class="cite-hide">[cite_start]</span>AI-powered retail infrastructure designed for national and international scalability<span class="cite-hide">[cite: 57]</span>.</p>
                 <div class="img-wrap">
                     <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" alt="E-commerce Retail">
                 </div>
@@ -332,7 +357,7 @@
         <div class="footer-top reveal">
             <div class="footer-brand">
                 <h2 class="footer-logo">ZIGZEX</h2>
-                <p>Architecting a structured, multi-vertical SaaS enterprise. Driven by a governance-first philosophy and a 50-year institutional continuity vision.</p>
+                <p><span class="cite-hide">[cite_start]</span>Architecting a structured, multi-vertical SaaS enterprise<span class="cite-hide">[cite: 4]</span>. <span class="cite-hide">[cite_start]</span>Driven by a governance-first philosophy and a 50-year institutional continuity vision<span class="cite-hide">[cite: 54]</span>.</p>
                 <div class="footer-socials">
                     <a href="#">LinkedIn</a>
                     <a href="#">Twitter/X</a>
@@ -344,21 +369,21 @@
                 <div class="footer-col">
                     <h4>Core Verticals</h4>
                     <a href="#">Aerospace Research</a>
-                    <a href="#">School & College ERP</a>
+                    <a href="#">School & College ERP <span class="cite-hide"></span></a>
                     <a href="#">HealthTech Architecture</a>
-                    <a href="#">Fashion E-Commerce</a>
+                    <a href="#">Fashion E-Commerce <span class="cite-hide"></span></a>
                 </div>
                 <div class="footer-col">
                     <h4>Governance</h4>
-                    <a href="#">MOA & AOA Docs</a>
+                    <a href="#">MOA & AOA Docs <span class="cite-hide"></span></a>
                     <a href="#">Board Structure</a>
-                    <a href="#">ESOP Pool (10%)</a>
-                    <a href="#">Corporate Tax & GST</a>
+                    <a href="#">ESOP Pool (10%) <span class="cite-hide"></span></a>
+                    <a href="#">Corporate Tax & GST <span class="cite-hide"></span></a>
                 </div>
                 <div class="footer-col">
                     <h4>Investment Structure</h4>
-                    <a href="#">Funding Roadmap</a>
-                    <a href="#">Valuation Simulation</a>
+                    <a href="#">Funding Roadmap <span class="cite-hide"></span></a>
+                    <a href="#">Valuation Simulation <span class="cite-hide"></span></a>
                     <a href="#">Financial Analytics</a>
                     <a href="#">Contact Partners</a>
                 </div>
@@ -366,7 +391,7 @@
         </div>
         
         <div class="footer-bottom reveal" style="transition-delay: 0.2s;">
-            <p>&copy; 2026 ZIGZEX IT SERVICES PRIVATE LIMITED. ALL RIGHTS RESERVED.</p>
+            <p>&copy; 2026 ZIGZEX IT SERVICES PRIVATE LIMITED. ALL RIGHTS RESERVED.<span class="cite-hide"></span></p>
             <div class="footer-legal-links">
                 <a href="#">Privacy Policy</a>
                 <a href="#">Terms of Service</a>
@@ -376,6 +401,25 @@
     </footer>
 
     <script>
+        // --- Hamburger Menu Logic ---
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('toggle');
+        });
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if(navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('toggle');
+                }
+            });
+        });
+
         // --- Theme Toggle Logic ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         
@@ -384,9 +428,9 @@
         
         if (currentTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
-            themeToggleBtn.innerHTML = '🌙'; // Moon icon for switching to dark
+            themeToggleBtn.innerHTML = '🌙'; 
         } else {
-            themeToggleBtn.innerHTML = '☀️'; // Sun icon for switching to light
+            themeToggleBtn.innerHTML = '☀️'; 
         }
 
         themeToggleBtn.addEventListener('click', () => {
